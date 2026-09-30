@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Multi-Room AI Chat</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="user-status-bar" class="user">
+        <span>Hello <b id="display-username"></b></span>
+        <button id="logout_btn" class="user2">Logout</button>
+      </div>
+
+      <div id="login-screen">
+        <h1>Welcome to Chat</h1>
+        <input
+          type="text"
+          id="nickname_input"
+          placeholder="Enter Nickname..."
+        >
+        <button id="enter_btn">Enter Lobby</button>
+      </div>
+
+      <div id="lobby-screen" style="display: none">
+        <div class="lobby-container">
+          <div class="create-section">
+            <h2>Create a New Room</h2>
+            <input
+              type="text"
+              id="new_room_name"
+              placeholder="New Room Name"
+            >
+            <input
+              type="password"
+              id="room_password"
+              placeholder="Set Password (Optional)"
+            >
+            <button id="create_room_btn">Create & Join</button>
+          </div>
+
+          <hr>
+
+          <div class="join-section">
+            <h2>Available Rooms</h2>
+            <div id="room-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chat-screen" class="main-card" style="display: none">
+        <h2 id="current-room-title">Room:</h2>
+
+        <div class="chat-body">
+          <div class="chat-left">
+            <div id="chatlog"></div>
+            <div id="typing-indicator"></div>
+          </div>
+
+          <div class="chat-right">
+            <h3>Users:</h3>
+            <ul id="user-list"></ul>
+          </div>
+        </div>
+
+        <div class="chat-footer">
+          <input
+            type="text"
+            id="message_input"
+            placeholder="Type your message here..."
+          >
+          <button id="send_btn" class="primary-btn">Send</button>
+          <button id="leave_btn" class="danger-btn">Leave Room</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,253 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#main-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  max-height: 800px;
+  margin: auto;
+  background: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#login-screen,
+#lobby-screen,
+#chat-screen {
+  height: 100%;
+}
+
+#chat-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 80%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+#chatlog {
+  flex: 1;
+  overflow-y: auto;
+  word-wrap: break-word;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+#user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#user-list li {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+#message_input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+#message_input:focus {
+  border-color: #007bff;
+}
+
+.primary-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.primary-btn:hover {
+  background-color: #0056b3;
+}
+
+.danger-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.danger-btn:hover {
+  background-color: #c82333;
+}
+
+.message {
+  margin-bottom: 8px;
+  padding: 5px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.system-msg {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+
+.agent-msg {
+  color: #007bff;
+  background: #e7f3ff;
+  border-radius: 4px;
+}
+
+.lobby-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.room-item button {
+  background-color: #28a745;
+}
+
+.create-section {
+  padding: 15px;
+  background: #e9ecef;
+  border-radius: 8px;
+}
+
+.chat-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  height: calc(100% - 60px);
+}
+
+.chat-left {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  padding: 10px;
+}
+
+.chat-right {
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.chat-footer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.main-card {
+  background-color: white;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#user-status-bar {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+#logout_btn {
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.user {
+  display: none;
+  text-align: right;
+  padding: 10px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.user2 {
+  background-color: #dc3545;
+  margin-left: 10px;
+  padding: 5px 10px;
+}
+
+#typing-indicator {
+  color: #888;
+  font-style: italic;
+  font-size: 14px;
+  min-height: 20px;
+  margin-bottom: 5px;
+}
