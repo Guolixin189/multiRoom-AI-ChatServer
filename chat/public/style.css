@@ -5,14 +5,14 @@
 }
 
 :root {
-  --accent: #16a34a;
-  --accent-dark: #15803d;
-  --accent-soft: #f0fdf4;
-  --accent-border: #bbf7d0;
+  --accent: #65a30d;
+  --accent-dark: #4d7c0f;
+  --accent-soft: #f7fee7;
+  --accent-border: #d9f99d;
   --text: #1f2937;
   --muted: #6b7280;
   --border: #e5e7eb;
-  --bg: #f3f5f3;
+  --bg: #f1f4e8;
 }
 
 body {
@@ -66,7 +66,7 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="password"]:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+  box-shadow: 0 0 0 3px rgba(101, 163, 13, 0.12);
 }
 
 button {
@@ -145,7 +145,7 @@ button {
 .login-form input {
   flex: 1;
   min-width: 0;
-  background: #f9fafb;
+  background: #f8faf3;
 }
 
 .login-hint {
@@ -193,7 +193,7 @@ button {
 }
 
 .create-section {
-  background: #f9fafb;
+  background: #f8faf3;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
@@ -223,7 +223,7 @@ button {
   display: block;
   text-align: center;
   color: var(--muted);
-  background: #f9fafb;
+  background: #f8faf3;
   border: 1px dashed var(--border);
   border-radius: 12px;
   padding: 24px;
@@ -326,7 +326,7 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: #fafbfa;
+  background: #f8faf2;
 }
 
 #chatlog {
@@ -351,7 +351,7 @@ button {
   max-width: 70%;
   padding: 9px 13px;
   border-radius: 14px;
-  background: #eef0ee;
+  background: #e9eddc;
   align-self: flex-start;
   font-size: 15px;
   line-height: 1.45;
@@ -459,7 +459,7 @@ button {
 }
 
 #user-list li:hover {
-  background: #f9fafb;
+  background: #f8faf3;
 }
 
 .avatar {
@@ -522,7 +522,7 @@ button {
 #message_input {
   flex: 1;
   min-width: 0;
-  background: #f9fafb;
+  background: #f8faf3;
 }
 
 /* ---------- user status bar ---------- */
@@ -554,7 +554,7 @@ button {
 }
 
 #logout_btn:hover {
-  background: #f9fafb;
+  background: #f8faf3;
   color: var(--text);
 }
 
