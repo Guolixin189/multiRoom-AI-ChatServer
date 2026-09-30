@@ -5,11 +5,14 @@ Nachuan Ding 605549 Section 02 dingn0823
 
 This project is our Module 5 group portion: a multi-room chat server built with Node.js and Socket.IO.
 
-## Option A - EC2 Deployment Info
+## Deployment
 
-URL: http://18.221.164.24:3457/index.html
-or http://3.16.67.55:3457/index.html
-Port number: 3457
+Deployed on Render (free tier) — the Express server serves both the WebSocket backend and the static frontend from `chat/public`, so a single web service is enough:
+
+- Root directory: `chat`
+- Build command: `npm install`
+- Start command: `npm start`
+- Environment variable: `OPENROUTER_API_KEY` (enables the `/agent` AI feature)
 
 Instructions:
 
@@ -17,13 +20,16 @@ Instructions:
 - To test a private room, create a room with a password and then join it from another browser window.
 - To test the AI feature, type `/agent` followed by a question in any room.
 
+Notes:
+
+- Render's free tier sleeps after ~15 minutes of inactivity, so the first request after idle may take ~30 seconds to respond.
+- Rooms, users, and chat history are kept in memory and reset when the server restarts.
+
 ## AI Model Used
 
-This project uses **local Ollama** with the **tinyllama** model.
+The `/agent` command calls the OpenRouter API (`meta-llama/llama-3.3-70b-instruct:free`, OpenAI-compatible chat completions endpoint).
 
-No API key is required for this setup.
-
-If Ollama is not running, the `/agent` feature may return an error message, but the chat server itself should still continue running.
+Set `OPENROUTER_API_KEY` as an environment variable (or in a local `.env` file inside `chat/`) — without it, the `/agent` feature returns an error message, but the chat server itself keeps running.
 
 ## Main Features
 
