@@ -1,139 +1,134 @@
-# CSE3300 Module 5
+# Multi-Room AI Chat
 
-Lixin Guo 525626 Section 02 Guolixin189  
-Nachuan Ding 605549 Section 02 dingn0823
+A real-time multi-room chat app with an **AI assistant built into every room**. Pick a nickname, create or join a room, and chat instantly — or type `/agent` followed by a question to get an AI answer right in the conversation.
 
-This project is our Module 5 group portion: a multi-room chat server built with Node.js and Socket.IO.
+**Live demo:** https://multiroom-ai-chatserver.onrender.com
 
-## Deployment
+## Features
 
-Deployed on Render (free tier) — the Express server serves both the WebSocket backend and the static frontend from `chat/public`, so a single web service is enough:
+- **No sign-up** — just pick a nickname and enter the lobby
+- **Multiple rooms** — create rooms with an optional password, or browse and join existing ones
+- **Real-time messaging** via WebSockets (Socket.io), with typing indicators
+- **🤖 `/agent` AI assistant** — ask the AI anything from inside any room (powered by OpenRouter free models)
+- **User list** — see who's in the room, with per-user color avatars
+- **Private DMs** — message any user directly
+- **Room moderation** — the room creator can kick or ban users
+- **Modern UI** — gradient theme, message bubbles, responsive layout (sidebar collapses on mobile)
 
-- Root directory: `chat`
-- Build command: `npm install`
-- Start command: `npm start`
-- Environment variable: `OPENROUTER_API_KEY` (enables the `/agent` AI feature)
+## The `/agent` Command
 
-Instructions:
+`/agent` brings an AI assistant into the chat room. While everyone is chatting, anyone can ask it a question:
 
-- No password is needed for the lobby. Just enter a nickname to join.
-- To test a private room, create a room with a password and then join it from another browser window.
-- To test the AI feature, type `/agent` followed by a question in any room.
+```
+/agent what is the capital of Japan?
+/agent explain recursion like I'm five
+/agent give me three dinner ideas
+```
 
-Notes:
+How it works:
 
-- Render's free tier sleeps after ~15 minutes of inactivity, so the first request after idle may take ~30 seconds to respond.
-- Rooms, users, and chat history are kept in memory and reset when the server restarts.
+1. Type `/agent` followed by your question and hit Send (or Enter)
+2. An "AI Agent is typing…" indicator appears
+3. The AI's reply is posted into the room as a message from **AI Agent**, visible to everyone
 
-## AI Model Used
+Technical notes:
 
-The `/agent` command calls the OpenRouter API (`meta-llama/llama-3.3-70b-instruct:free`, OpenAI-compatible chat completions endpoint).
+- The server forwards your prompt to the [OpenRouter](https://openrouter.ai/) chat-completions API
+- Default model is `qwen/qwen3.8-27b:free` (free tier) — override it with the `OPENROUTER_MODEL` env var
+- Requires an `OPENROUTER_API_KEY` (get a free one at [openrouter.ai/keys](https://openrouter.ai/keys))
+- OpenRouter's free tier allows **50 requests/day per account**, shared across all your keys — and failed requests count too, so a busy room can burn through it
+- If the AI is unreachable you'll see `AI Error: AI service unavailable.` — check the server logs for the underlying OpenRouter HTTP status
 
-Set `OPENROUTER_API_KEY` as an environment variable (or in a local `.env` file inside `chat/`) — without it, the `/agent` feature returns an error message, but the chat server itself keeps running.
+## Tech Stack
 
-## Main Features
+| Layer    | Technology                              |
+|----------|-----------------------------------------|
+| Backend  | Node.js, Express, Socket.io             |
+| Frontend | Vanilla HTML / CSS / JavaScript          |
+| AI       | OpenRouter API (OpenAI-compatible)       |
+| Hosting  | Render (backend + static frontend)       |
 
-- Users can enter a nickname in the lobby
-- Users can create chat rooms with any room name
-- Users can join available chat rooms
-- Users in the current room are displayed on the right side
-- Private password-protected rooms are supported
-- Room creators can kick users out of the room
-- Room creators can ban users from rejoining that room
-- Messages show the sender’s username and are broadcast to everyone in the room
-- Users can send private messages to another user in the same room
-- Everything runs on a single webpage
+## Project Structure
 
-## Creative Portion
+```
+chat/
+├── chat-server.js      # Express + Socket.io server, /agent handler
+├── package.json
+└── public/
+    ├── index.html      # Login / lobby / chat screens
+    ├── main.js         # Socket.io client logic
+    └── style.css       # Modern indigo/violet theme
+```
 
-1. **User Identity**
+## Run Locally
 
-   A user status bar is shown at the top right of the page and displays the current nickname. Users can log out and return to the login screen to enter a different nickname and rejoin the lobby.
+```bash
+cd chat
+npm install
+```
 
-2. **Real-Time Typing Indicators**
+Create a `.env` file (or export the vars directly):
 
-   The chatroom shows a typing indicator when someone is currently typing. This also works for the AI Agent. If more than one person is typing at the same time, the interface shows a combined message instead of listing too many separate indicators.
+```env
+OPENROUTER_API_KEY=sk-or-v1-your-key-here
+# Optional:
+# PORT=3457
+# OPENROUTER_MODEL=qwen/qwen3.8-27b:free
+```
 
-3. **Per-Room Message History**
+Then:
 
-   Each room stores recent messages in memory. When a user joins a room, they can immediately see the recent conversation instead of entering an empty chat. Right now the server keeps the latest 20 messages for each room during the current server session.
+```bash
+npm start
+```
 
-## Notes for Testing
+Open http://localhost:3457 in your browser. Open a second tab/window with a different nickname to see multi-user chat in action.
 
-For the best test:
+> Without `OPENROUTER_API_KEY`, everything works except `/agent` (it will reply with an error).
 
-- open two browser windows
-- join the same room with two different nicknames
-- test normal chat, private messaging, kick/ban, and room switching
-- test `/agent` in a room
-- test a private room by creating a room with a password
+## Deploy to Render
 
-## AI Reflection
+1. Push this repo to GitHub (or fork it)
+2. In the [Render dashboard](https://dashboard.render.com/), click **New → Web Service** and connect the repo
+3. Configure:
+   - **Root Directory:** `chat`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Plan:** Free
+4. Under **Environment**, add:
+   - `OPENROUTER_API_KEY` = your key from https://openrouter.ai/keys
+   - *(optional)* `OPENROUTER_MODEL` = e.g. `qwen/qwen3.8-27b:free`
+5. Deploy — Render gives you a public `https://<your-service>.onrender.com` URL
 
-### Before Coding
+Enable **Auto-Deploy on commit** (Settings → Build & Deploy) so every push to `main` redeploys automatically. (This requires connecting the repo via your GitHub account, not the "public repo URL" option.)
 
-**What is the goal of this assignment?**  
-The goal of this assignment is to build a multi-room chat application using Node.js and Socket.IO. We needed to support room creation, joining rooms, private messaging, room administration, and an AI assistant command.
+> Render's free tier sleeps after ~15 minutes of inactivity — the first request after sleep takes ~30–60 seconds to wake the server (cold start). This is normal.
 
-**When will you use AI, and when will you avoid it?**  
-We used AI mostly for planning logic, debugging, and understanding how to connect different parts of the real-time chat system. We tried not to rely on AI for everything, especially for the basic page structure and parts we could reasonably write and understand ourselves.
+## Environment Variables
 
-**What conceptual questions did you ask the AI?**  
-We asked questions about how to manage users and rooms in memory, how to send private messages between users in the same room, and how to handle room-based state changes with Socket.IO. We also asked about typing indicators and about how to connect the `/agent` command to an AI model.
+| Variable            | Required | Default                    | Description                              |
+|---------------------|----------|----------------------------|------------------------------------------|
+| `OPENROUTER_API_KEY`| Yes*     | —                          | OpenRouter API key for `/agent`          |
+| `OPENROUTER_MODEL`  | No       | `qwen/qwen3.8-27b:free`    | Model used by `/agent`                   |
+| `PORT`              | No       | `3457`                     | Port the server listens on               |
 
-### During Development
+\* Only required for `/agent`; the rest of the app works without it.
 
-**Paste your three most useful AI prompts.**
+## Usage Guide
 
-1. `How do I implement a private message feature where only two users in the same room can see the text?`
+1. **Log in** — enter any nickname and click Enter Lobby
+2. **Lobby** — create a room (optionally password-protected) with *Create & Join*, or join an existing room from the list (🔒 = password required)
+3. **Chat** — type and hit Send (or Enter); you can see when others are typing
+4. **Users panel** — hover a user to DM them privately; if you created the room you can also Kick/Ban
+5. **AI** — type `/agent <question>` any time to ask the AI assistant
+6. **Leave** — Leave Room returns you to the lobby; Logout returns to the login screen
 
-2. `My EC2 instance is running out of memory when trying to load a large language model. How can I set up a swap file?`
+## Notes & Limitations
 
-3. `How can I implement a typing indicator that shows when a user or the AI is generating text?`
+- Chat history and room state are **in-memory** — they reset when the server restarts. (Fine for demos; a production version would add a database.)
+- Free-model availability on OpenRouter changes over time — if `/agent` starts failing with no code changes, check that the configured model still exists in [OpenRouter's model list](https://openrouter.ai/models).
+- The unused `@google/generative-ai` dependency in `package.json` is a leftover from the original class project.
 
-**What was the AI’s response? (Summarize.)**  
-The AI explained the general logic for private messaging with socket IDs, suggested Linux commands for setting up swap space on EC2, and described how a typing indicator could be implemented using events and a timeout so the message would disappear when typing stops.
+## Background
 
-**What did you change in the AI’s output, and why?**  
-We changed some of the AI suggestions to better fit our project. For example, we used `tinyllama` with local Ollama instead of a larger model, because that was more realistic for our EC2 setup. We also adjusted the typing indicator display so it fit the look of our chat UI better.
-
-**What worked and what did not? (Be specific.)**  
-The general Socket.IO logic from AI suggestions was useful, especially for private messaging and typing events. Some AI suggestions were too generic and did not fully match our existing code structure, so we had to adapt them. We also found that model choice mattered a lot because of EC2 resource limits.
-
-### After Completion
-
-**What errors did the AI make that you caught?**  
-One issue was that some suggested logic did not properly match our current room-handling code, so we had to rewrite parts of it to avoid breaking room joins. Another issue was that some suggestions did not fully consider edge cases like a user leaving the room before a private message is sent.
-
-**What debugging or testing did you do?**  
-We tested the project by opening multiple browser windows with different nicknames. We checked room creation, joining, private rooms, private messaging, kick/ban behavior, typing indicators, and the `/agent` command. We also tested recent room message history after users joined a room later.
-
-**What did you understand better because of the AI?**  
-AI helped us understand room-based state management, private message flow, and how to handle asynchronous AI responses in a chatroom. It also helped clarify some EC2 setup issues related to running a local model.
-
-**What would you change about how you use AI next time?**  
-Next time, we would verify environment constraints earlier before trying bigger AI-related setups. We would also spend a little more time checking how well AI suggestions match our existing code before copying any ideas into the project.
-<br><br><br><br><br><br><br><br><br>
-Rubric
-
-| Possible | Requirement                                                                     |
-| -------- | ------------------------------------------------------------------------------- |
-| 5        | Users can create chat rooms with an arbitrary room name                         |
-| 5        | Users can join an arbitrary room                                                |
-| 5        | Chatroom displays a list of users in the room                                   |
-| 5        | Private, password protected rooms can be created                                |
-| 3        | Creators of room can temporarily kick users from the room                       |
-| 2        | Creators of room can permanently ban users from the room                        |
-| 1        | A user's message shows their username and is sent to everyone in the room       |
-| 4        | Users can send private messages to other users in the room                      |
-| 2        | Code is well-formated and easy to read                                          |
-| 2        | Site passes the [HTML5 validator](https://validator.w3.org/)                    |
-| 0.5      | `package.json` is included, with all dependencies needed to run the application |
-| 0.5      | `node_modules` is ignored by git using a `.gitignore` file                      |
-| 4        | Communicating with others and joining rooms is easy and intuitive               |
-| 1        | Site is visually appealing                                                      |
-| 10       | Implement an AI assistant via the command \agent                                |
-| 5        | Handles errors gracefully when communicating with the agent                     |
-| 5        | Completion of the AI Reflections                                                |
-
-## Creative Portion (10 possible)
+This project started as a CSE3300 (Web Development) course project, originally deployed on a class EC2 instance with a local Ollama model. It has since been migrated to Render + OpenRouter so it runs entirely on free-tier cloud services with no server maintenance.
