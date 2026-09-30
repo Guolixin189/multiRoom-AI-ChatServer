@@ -105,6 +105,12 @@ io.on("connection", (socket) => {
 
         io.to(room).emit("user_typing", "AI Agent");
 
+        if (!process.env.OPENROUTER_API_KEY) {
+          console.error("AI Error: OPENROUTER_API_KEY is not set");
+          socket.emit("error_msg", "AI Error: AI service unavailable.");
+          return;
+        }
+
         const response = await fetch(
           "https://openrouter.ai/api/v1/chat/completions",
           {
@@ -114,13 +120,17 @@ io.on("connection", (socket) => {
               Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
             },
             body: JSON.stringify({
-              model: "meta-llama/llama-3.3-70b-instruct:free",
+              model: process.env.OPENROUTER_MODEL || "qwen/qwen3.8-27b:free",
               messages: [{ role: "user", content: promptText }],
             }),
           },
         );
 
         if (!response.ok) {
+          const errBody = await response.text().catch(() => "");
+          console.error(
+            `AI Error: OpenRouter ${response.status} ${errBody.slice(0, 300)}`,
+          );
           throw new Error("AI No Response");
         }
 
