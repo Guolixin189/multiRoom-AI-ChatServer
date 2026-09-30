@@ -6,11 +6,23 @@ let typingTimer;
 const typingInterval = 1500;
 let typers = [];
 
+const SCREEN_DISPLAY = {
+  "login-screen": "flex",
+  "lobby-screen": "block",
+  "chat-screen": "flex",
+};
+
 function showScreen(screenId) {
   ["login-screen", "lobby-screen", "chat-screen"].forEach((id) => {
     document.getElementById(id).style.display =
-      id === screenId ? "block" : "none";
+      id === screenId ? SCREEN_DISPLAY[id] : "none";
   });
+}
+
+function hueFor(name) {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.codePointAt(0)) % 360;
+  return h;
 }
 
 function clearTypingState() {
@@ -36,7 +48,7 @@ document.getElementById("enter_btn").onclick = () => {
 
   socket.emit("login", name);
   document.getElementById("display-username").innerText = name;
-  document.getElementById("user-status-bar").style.display = "block";
+  document.getElementById("user-status-bar").style.display = "flex";
   showScreen("lobby-screen");
 };
 
@@ -109,7 +121,14 @@ socket.on("update_user_list", (data) => {
     const isMe = user.id === socket.id;
     const isCreator = user.id === data.creatorId;
 
+    const avatar = document.createElement("span");
+    avatar.className = "avatar";
+    avatar.textContent = user.name.charAt(0).toUpperCase();
+    avatar.style.background = `hsl(${hueFor(user.name)} 65% 55%)`;
+    li.appendChild(avatar);
+
     const label = document.createElement("span");
+    label.className = "user-label";
     let text = user.name;
     if (isCreator) text += " 👑";
     if (isMe) text += " (You)";
@@ -119,9 +138,7 @@ socket.on("update_user_list", (data) => {
     if (!isMe) {
       const dmBtn = document.createElement("button");
       dmBtn.innerText = "DM";
-      dmBtn.style.marginLeft = "10px";
-      dmBtn.style.backgroundColor = "#17a2b8";
-      dmBtn.style.color = "white";
+      dmBtn.className = "mini-btn dm-btn";
       dmBtn.onclick = () => {
         const msg = prompt(`Send private message to ${user.name}:`);
         const cleanMsg = msg ? msg.trim() : "";
@@ -138,12 +155,12 @@ socket.on("update_user_list", (data) => {
     if (socket.id === data.creatorId && !isMe) {
       const kBtn = document.createElement("button");
       kBtn.innerText = "Kick";
-      kBtn.style.marginLeft = "5px";
+      kBtn.className = "mini-btn kick-btn";
       kBtn.onclick = () => socket.emit("kick_user", user.id);
 
       const bBtn = document.createElement("button");
       bBtn.innerText = "Ban";
-      bBtn.style.marginLeft = "5px";
+      bBtn.className = "mini-btn ban-btn";
       bBtn.onclick = () => socket.emit("ban_user", user.id);
 
       li.appendChild(kBtn);
@@ -168,10 +185,15 @@ socket.on("message_to_client", (data) => {
   const div = document.createElement("div");
   div.className = "message";
 
+  const myName = document.getElementById("display-username").innerText;
   if (data.name === "System") {
     div.classList.add("system-msg");
   } else if (data.name === "AI Agent") {
     div.classList.add("agent-msg");
+  } else if (data.name === myName || data.name.startsWith("[Private to")) {
+    div.classList.add("own-msg");
+  } else if (data.name.startsWith("[Private")) {
+    div.classList.add("private-msg");
   }
 
   const namePart = document.createElement("b");
