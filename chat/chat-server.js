@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import "dotenv/config";
 
 const app = express();
 const server = createServer(app);
@@ -104,33 +105,42 @@ io.on("connection", (socket) => {
 
         io.to(room).emit("user_typing", "AI Agent");
 
-        const response = await fetch("http://localhost:11434/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "tinyllama",
-            prompt: promptText,
-            stream: false,
-          }),
-        });
+        const response = await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            },
+            body: JSON.stringify({
+              model: "meta-llama/llama-3.3-70b-instruct:free",
+              messages: [{ role: "user", content: promptText }],
+            }),
+          },
+        );
 
         if (!response.ok) {
           throw new Error("AI No Response");
         }
 
         const result = await response.json();
+        const aiText = result.choices?.[0]?.message?.content?.trim();
+        if (!aiText) {
+          throw new Error("AI No Response");
+        }
 
         io.to(room).emit("user_stop_typing", "AI Agent");
 
         io.to(room).emit("message_to_client", {
           name: "AI Agent",
-          message: result.response,
+          message: aiText,
         });
-        addToRoomHistory(room, "AI Agent", result.response);
+        addToRoomHistory(room, "AI Agent", aiText);
       } catch (err) {
         console.error("AI Error:", err);
         io.to(room).emit("user_stop_typing", "AI Agent");
-        socket.emit("error_msg", "AI Error: Cannot Connect to Ollama.");
+        socket.emit("error_msg", "AI Error: AI service unavailable.");
       }
     }
   });
@@ -308,4 +318,5 @@ function getRoomList() {
   });
 }
 
-server.listen(3457, () => console.log("Server running on port 3457"));
+const PORT = process.env.PORT || 3457;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
