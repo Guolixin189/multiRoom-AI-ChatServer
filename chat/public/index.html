@@ -2,44 +2,60 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Multi-Room AI Chat</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div id="main-container">
-      <div id="user-status-bar" class="user">
+      <div id="user-status-bar">
         <span>Hello <b id="display-username"></b></span>
-        <button id="logout_btn" class="user2">Logout</button>
+        <button id="logout_btn">Logout</button>
       </div>
 
       <div id="login-screen">
-        <h1>Welcome to Chat</h1>
-        <input
-          type="text"
-          id="nickname_input"
-          placeholder="Enter Nickname..."
-        >
-        <button id="enter_btn">Enter Lobby</button>
+        <div class="login-card">
+          <div class="login-logo">💬</div>
+          <h1>Welcome to Chat</h1>
+          <p class="login-subtitle">Pick a nickname to enter the lobby</p>
+          <div class="login-form">
+            <input
+              type="text"
+              id="nickname_input"
+              placeholder="Enter Nickname..."
+              maxlength="20"
+              autocomplete="off"
+            >
+            <button id="enter_btn">Enter Lobby</button>
+          </div>
+          <p class="login-hint">Tip: type <code>/agent</code> followed by a question in any room to ask the AI</p>
+        </div>
       </div>
 
       <div id="lobby-screen" style="display: none">
         <div class="lobby-container">
-          <div class="create-section">
-            <h2>Create a New Room</h2>
-            <input
-              type="text"
-              id="new_room_name"
-              placeholder="New Room Name"
-            >
-            <input
-              type="password"
-              id="room_password"
-              placeholder="Set Password (Optional)"
-            >
-            <button id="create_room_btn">Create & Join</button>
+          <div class="lobby-header">
+            <h1>🏠 Lobby</h1>
+            <p>Join a room or create your own</p>
           </div>
 
-          <hr>
+          <div class="create-section">
+            <h2>Create a New Room</h2>
+            <div class="create-form">
+              <input
+                type="text"
+                id="new_room_name"
+                placeholder="New Room Name"
+                maxlength="30"
+              >
+              <input
+                type="password"
+                id="room_password"
+                placeholder="Set Password (Optional)"
+              >
+              <button id="create_room_btn">Create &amp; Join</button>
+            </div>
+          </div>
 
           <div class="join-section">
             <h2>Available Rooms</h2>
@@ -48,8 +64,11 @@
         </div>
       </div>
 
-      <div id="chat-screen" class="main-card" style="display: none">
-        <h2 id="current-room-title">Room:</h2>
+      <div id="chat-screen" style="display: none">
+        <div class="chat-header">
+          <h2 id="current-room-title">Room:</h2>
+          <button id="leave_btn" class="danger-btn">Leave Room</button>
+        </div>
 
         <div class="chat-body">
           <div class="chat-left">
@@ -58,7 +77,7 @@
           </div>
 
           <div class="chat-right">
-            <h3>Users:</h3>
+            <h3>Users</h3>
             <ul id="user-list"></ul>
           </div>
         </div>
@@ -68,9 +87,9 @@
             type="text"
             id="message_input"
             placeholder="Type your message here..."
+            autocomplete="off"
           >
           <button id="send_btn" class="primary-btn">Send</button>
-          <button id="leave_btn" class="danger-btn">Leave Room</button>
         </div>
       </div>
     </div>
