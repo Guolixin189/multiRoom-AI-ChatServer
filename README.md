@@ -34,7 +34,7 @@ How it works:
 Technical notes:
 
 - The server forwards your prompt to the [OpenRouter](https://openrouter.ai/) chat-completions API
-- Default model is `qwen/qwen3.8-27b:free` (free tier) — override it with the `OPENROUTER_MODEL` env var
+- Default model is `google/gemma-4-31b-it:free` (free tier) — override it with the `OPENROUTER_MODEL` env var
 - Requires an `OPENROUTER_API_KEY` (get a free one at [openrouter.ai/keys](https://openrouter.ai/keys))
 - OpenRouter's free tier allows **50 requests/day per account**, shared across all your keys — and failed requests count too, so a busy room can burn through it
 - If the AI is unreachable you'll see `AI Error: AI service unavailable.` — check the server logs for the underlying OpenRouter HTTP status
@@ -73,7 +73,7 @@ Create a `.env` file (or export the vars directly):
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
 # Optional:
 # PORT=3457
-# OPENROUTER_MODEL=qwen/qwen3.8-27b:free
+# OPENROUTER_MODEL=google/gemma-4-31b-it:free
 ```
 
 Then:
@@ -97,7 +97,7 @@ Open http://localhost:3457 in your browser. Open a second tab/window with a diff
    - **Plan:** Free
 4. Under **Environment**, add:
    - `OPENROUTER_API_KEY` = your key from https://openrouter.ai/keys
-   - *(optional)* `OPENROUTER_MODEL` = e.g. `qwen/qwen3.8-27b:free`
+   - *(optional)* `OPENROUTER_MODEL` = e.g. `google/gemma-4-31b-it:free`
 5. Deploy — Render gives you a public `https://<your-service>.onrender.com` URL
 
 Enable **Auto-Deploy on commit** (Settings → Build & Deploy) so every push to `main` redeploys automatically. (This requires connecting the repo via your GitHub account, not the "public repo URL" option.)
@@ -109,7 +109,7 @@ Enable **Auto-Deploy on commit** (Settings → Build & Deploy) so every push to 
 | Variable            | Required | Default                    | Description                              |
 |---------------------|----------|----------------------------|------------------------------------------|
 | `OPENROUTER_API_KEY`| Yes*     | —                          | OpenRouter API key for `/agent`          |
-| `OPENROUTER_MODEL`  | No       | `qwen/qwen3.8-27b:free`    | Model used by `/agent`                   |
+| `OPENROUTER_MODEL`  | No       | `google/gemma-4-31b-it:free`    | Model used by `/agent`                   |
 | `PORT`              | No       | `3457`                     | Port the server listens on               |
 
 \* Only required for `/agent`; the rest of the app works without it.
