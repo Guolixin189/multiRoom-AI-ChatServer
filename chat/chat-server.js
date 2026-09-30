@@ -107,7 +107,10 @@ io.on("connection", (socket) => {
 
         if (!process.env.OPENROUTER_API_KEY) {
           console.error("AI Error: OPENROUTER_API_KEY is not set");
-          socket.emit("error_msg", "AI Error: AI service unavailable.");
+          socket.emit(
+            "error_msg",
+            "AI Error: missing API key — set OPENROUTER_API_KEY in the Render dashboard.",
+          );
           return;
         }
 
@@ -131,7 +134,7 @@ io.on("connection", (socket) => {
           console.error(
             `AI Error: OpenRouter ${response.status} ${errBody.slice(0, 300)}`,
           );
-          throw new Error("AI No Response");
+          throw new Error(`AI_HTTP_${response.status}`);
         }
 
         const result = await response.json();
@@ -150,7 +153,13 @@ io.on("connection", (socket) => {
       } catch (err) {
         console.error("AI Error:", err);
         io.to(room).emit("user_stop_typing", "AI Agent");
-        socket.emit("error_msg", "AI Error: AI service unavailable.");
+        const m = /^AI_HTTP_(\d+)$/.exec(err.message);
+        socket.emit(
+          "error_msg",
+          m
+            ? `AI Error: AI service unavailable (OpenRouter ${m[1]}).`
+            : "AI Error: AI service unavailable.",
+        );
       }
     }
   });
